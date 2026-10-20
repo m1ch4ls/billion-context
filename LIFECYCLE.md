@@ -108,6 +108,9 @@
 | `BILI_PERSIST_TAIL_TOKENS` | persist.tailTokens，16384（0 禁用消息持久化，#401） |
 | `BILI_PERSIST_ZSTD` | `=1/true` 启用 zstd 压缩持久化（owner 决定 #1080，默认 off） |
 | `BILI_SESSIONS_DIR` | 状态目录重定位 |
+| `BILI_STORAGE_ARCHIVE_AFTER_DAYS` | storage.archiveAfterDays，超期会话归档（#3911，默认 365，0=关） |
+| `BILI_STORAGE_WAL_JOURNAL_SIZE_LIMIT_BYTES` | sidecar WAL journal 上限（#3255，默认 8 MiB） |
+| `BILI_MYSQL_DSN` | mysql 存储后端连接串（#3388/#3946，storage.backend=mysql 时生效） |
 
 ### 2.5 诊断
 
@@ -119,6 +122,9 @@
 | `BILI_DUMP_MAX_AGE_DAYS` | dump 年龄上限，默认 off(null) |
 | `BILI_FAKE_BUF_CAP` | fake-completion 缓冲上限，16 MiB |
 | `BILI_CONFLICT_SCAN` | thirdparty-scan 冲突扫描开关 |
+| `BILI_DECODED_BODY_BYTES` / `BILI_OUTBOUND_BODY_BYTES` / `BILI_RECEIVE_BODY_BYTES` / `BILI_WS_OUTBOUND_BYTES` | 请求/响应字节计量上限（诊断截断保护） |
+| `BILI_SNAPSHOT_SHADOW` | 快照渲染影子对账开关（#3865，默认 ON，snapshot.shadow 同位） |
+| `BILI_INVARIANT_JUDGE` | 出站双不变量判官（#3944，出站字节断言车道） |
 
 ### 2.6 安全 / 运维通道
 
@@ -128,6 +134,7 @@
 | `BILI_CONFIG_FILE` | `--config` 等价物 |
 | `BILI_CLIENT_BIN` | native 可执行文件覆盖（probe 契约同 launcher） |
 | `BILI_CONVERSATION_ID` | codex spawn 期会话注册（CLAUDE_CODE_SESSION_ID 优先） |
+| `BILI_CA_FILE` | TLS CA 证书覆盖（自签上游） |
 | `BILI_MCP_PROXY` | codex MCP shell 用的 proxy origin（含发现回退） |
 | `BILI_MCP_DEFAULT_ORIGIN` | zcode MCP entry 默认 origin（http://127.0.0.1:8787） |
 | `BILI_MCP_NO_ORPHAN_ADOPT` | `=1` 多宿主共享一个 proxy 时禁用孤儿 adopt |
@@ -153,6 +160,17 @@
 | `BILI_ADVISORY_URL` | 公告文档 URL 覆盖 |
 | `BILI_RELEASE_NOTES_CHECK` | 发布说明检查（#1870，默认 ON） |
 | `BILI_RELEASE_NOTES_URL` | 发布说明 URL 覆盖 |
+| `BILI_UPDATE_POLICY_URL` | 更新策略文档 URL（#3619 策略门） |
+| `BILI_UPDATE_STAGGER_MIN_MS` / `BILI_UPDATE_STAGGER_MAX_MS` | 更新错峰窗口（#3619，默认随机区间） |
+
+### 2.9 行为面 / 宿主模式杂项
+
+| 变量 | 一句话用途 |
+|------|-----------|
+| `BILI_AUTO_MODE_FORGE` | auto 模式本地伪造应答开关（#2740 forge 纪律） |
+| `BILI_DSH_AUTHORED_COMPACTION` | bili 亲自接管 dsh 压缩调用（#3737/#3901，默认 ON，dsh.authoredCompaction 同位） |
+| `BILI_GUARDRAIL_BASH_TIMEOUT` / `BILI_GUARDRAIL_MAX_OUTPUT_BYTES` / `BILI_GUARDRAIL_REPETITION` / `BILI_GUARDRAIL_TEXT_RUN_THRESHOLD` | 输出护栏参数族（bash 超时 / 输出上限 / 重复抑制 / 文本长跑阈值） |
+| `BILI_PI_INLINE` | pi 宿主 inline 模式 |
 
 ### 2.8 图像计费 / zcode 兼容
 
@@ -162,6 +180,7 @@
 | `BILI_IMAGE_TOKEN_CAP` | 单图成本上限 live-read（#1843 L3） |
 | `BILI_ZCODE_ROUTE` | zcode 路由兼容逃生舱（`=none` / kill-switch → 降级路由） |
 | `BILI_ZCODE_SIGNING_FIXED` | zcode 固定签名 |
+| `BILI_IMAGE_RESCALE` / `BILI_IMAGE_RESCALE_MAX_DIM` | 图片重缩放开关与最大边长（#3400） |
 
 ## 3. 非环境变量的 BILI_* 标识符（勿与上表混淆）
 
