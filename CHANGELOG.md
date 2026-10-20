@@ -5,6 +5,10 @@ Versions follow the merge of a `*_release-v*` branch; CI publishes to npm on tag
 
 ## [Unreleased]
 
+### 压缩
+
+- **compress-from-store：被逐出的会话对着统一存储的原始视图折叠，不再永久拒收（#3982，根治 #3918 Phase 4）**：超过常驻池预算（默认 512 MiB）的大会话每次模型请求后都被逐出，活内存视图永不存活，`compress` 工具因此永久 REFUSED——而统一存储（#3911）本就每次保存把完整原始客户端视图镜像进 messages 表。现在 applyRanges 与外部摘要链在"有效视图为空"时先从统一正史恢复视图（只读、只窥探——绝不隐式建库；任一行不可解析维持诚实拒收），折叠落在持久化 state 上，与"下一轮模型请求后重试"路径完全同构。活视图在场时存储从不被咨询（零行为变化）；无存储/legacy 模式拒收回执逐字节不变。
+
 ### 存储
 
 - **SQLite 引擎自举按运行时分级钉死产物（#3894，作者 @zypNB123）**：Node ≥ 22 且 N-API ≥ 10 继续用单个 v13 tarball；Node 20 与 22.0–22.12（只有 N-API 9）改用 better-sqlite3 v12.9.0（纯 JS tarball + ABI 匹配的 prebuild，经 npmmirror 二进制镜像获取、sha512 校验、nativeBinding 注入）——低版本 Node 留在统一存储车道而不是降级 legacy。任何钉死产物都不支持的运行时在**加载之前**拒绝（`unsupported-node`，不下载、不注册缓存副本），因为在那里 dlopen 该 binding 会直接崩溃进程（win32 上 1485 次连续 0xC0000005 崩溃环的根因）；同版本多 ABI 缓存共存，切换 Node 大版本不重下。
